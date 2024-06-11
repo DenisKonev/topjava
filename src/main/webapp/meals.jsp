@@ -28,24 +28,21 @@
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
-<h2>Meals</h2>
+<h2 style="text-align: center;">Моя еда</h2>
 <table>
-    <caption>Meals</caption>
     <thead>
     <tr>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Description</th>
-        <th>Calories</th>
+        <th>Дата/Время</th>
+        <th>Описание</th>
+        <th>Калории</th>
     </tr>
     </thead>
     <tbody>
     <c:forEach var="meal" items="${meals}">
         <tr class="${meal.excess ? 'excess' : 'normal'}">
-            <td><c:out value="${meal.dateTime.toLocalDate()}"/></td>
-            <td><c:out value="${meal.dateTime.toLocalTime()}"/></td>
-            <td><c:out value="${meal.description}"/></td>
-            <td><c:out value="${meal.calories}"/></td>
+            <td>${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}</td>
+            <td>${meal.description}</td>
+            <td>${meal.calories}</td>
         </tr>
     </c:forEach>
     </tbody>

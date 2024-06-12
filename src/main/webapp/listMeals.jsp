@@ -26,12 +26,15 @@
     </style>
 </head>
 <body>
-<h3><a href="index.html">Home</a></h3>
+<h3><a href="index.jsp">Home</a></h3>
+<h3><a href="addOrUpdateMeal.jsp">Добавить еду</a></h3>
+<h3><a href="addOrUpdateMeal.jsp">Обновить еду</a></h3>
 <hr>
 <h2 style="text-align: center;">Моя еда</h2>
 <table>
     <thead>
     <tr>
+        <th>Id</th>
         <th>Дата/Время</th>
         <th>Описание</th>
         <th>Калории</th>
@@ -40,6 +43,7 @@
     <tbody>
     <c:forEach var="meal" items="${meals}">
         <tr class="${meal.excess ? 'excess' : 'normal'}">
+            <td>${meal.id}</td>
             <td>${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}</td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>

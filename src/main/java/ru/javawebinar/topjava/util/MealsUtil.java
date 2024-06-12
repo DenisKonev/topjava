@@ -3,11 +3,15 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealTo;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class MealsUtil {
     public static final int CALORIES_PER_DAY = 2000;
@@ -25,17 +29,24 @@ public class MealsUtil {
     }
 
     public static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        MealFilterStrategy strategy;
+        Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
+                .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
+
+        Predicate<Meal> predicate;
         if (startTime == null && endTime == null) {
-            strategy = new FilterAllMeals();
+            predicate = MealPredicates.allMeals();
         } else if (startTime == null) {
-            strategy = new FilterByEndTime();
+            predicate = MealPredicates.byEndTime(endTime);
         } else if (endTime == null) {
-            strategy = new FilterByStartTime();
+            predicate = MealPredicates.byStartTime(startTime);
         } else {
-            strategy = new FilterByBothTimes();
+            predicate = MealPredicates.byBothTimes(startTime, endTime);
         }
-        return strategy.filter(meals, startTime, endTime, caloriesPerDay);
+
+        return meals.stream()
+                .filter(predicate)
+                .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
+                .collect(Collectors.toList());
     }
 
     public static MealTo createTo(Meal meal, boolean excess) {

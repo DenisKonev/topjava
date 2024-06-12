@@ -10,7 +10,6 @@ import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class MealsUtil {
@@ -31,20 +30,8 @@ public class MealsUtil {
     public static List<MealTo> filteredByStreams(List<Meal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories)));
-
-        Predicate<Meal> predicate;
-        if (startTime == null && endTime == null) {
-            predicate = MealPredicates.allMeals();
-        } else if (startTime == null) {
-            predicate = MealPredicates.byEndTime(endTime);
-        } else if (endTime == null) {
-            predicate = MealPredicates.byStartTime(startTime);
-        } else {
-            predicate = MealPredicates.byBothTimes(startTime, endTime);
-        }
-
         return meals.stream()
-                .filter(predicate)
+                .filter(MealPredicates.byTimes(startTime, endTime))
                 .map(meal -> createTo(meal, caloriesSumByDate.get(meal.getDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
     }

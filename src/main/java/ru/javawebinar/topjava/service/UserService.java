@@ -30,6 +30,10 @@ public class UserService {
         return checkNotFoundWithId(repository.get(id), id);
     }
 
+    public User getByLogin(String email) {
+        return repository.getByEmail(email);
+    }
+
     public User getByEmail(String email) {
         return checkNotFound(repository.getByEmail(email), "email=" + email);
     }

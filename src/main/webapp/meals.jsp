@@ -14,11 +14,23 @@
         .excess {
             color: red;
         }
+
+        .header-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
 <section>
-    <h3><a href="index.html">Home</a></h3>
+    <div class="header-links">
+        <h3><a href="afterLogin.jsp">Home</a></h3>
+        <h3><a href="index.jsp">Logout</a></h3>
+        <c:if test="${user.isAdmin}">
+            <h3><a href="users">Users</a></h3>
+        </c:if>
+    </div>
     <hr/>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
@@ -34,7 +46,7 @@
         </tr>
         </thead>
         <c:forEach items="${requestScope.meals}" var="meal">
-            <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
+            <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
             <tr class="${meal.excess ? 'excess' : 'normal'}">
                 <td>
                         <%--${meal.dateTime.toLocalDate()} ${meal.dateTime.toLocalTime()}--%>

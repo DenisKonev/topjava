@@ -7,17 +7,12 @@ import java.util.*;
 import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 public class User extends AbstractNamedEntity {
-
     private String email;
-
     private String password;
-
     private boolean enabled;
-
+    private boolean isAdmin;
     private Date registered = new Date();
-
     private Set<Role> roles;
-
     private int caloriesPerDay;
 
     public User(Integer id, String name, String email, String password, Role... roles) {
@@ -31,6 +26,7 @@ public class User extends AbstractNamedEntity {
         this.caloriesPerDay = caloriesPerDay;
         this.enabled = enabled;
         setRoles(roles);
+        isAdmin = this.roles.contains(Role.ADMIN);
     }
 
     public String getEmail() {
@@ -57,7 +53,7 @@ public class User extends AbstractNamedEntity {
         this.caloriesPerDay = caloriesPerDay;
     }
 
-    public boolean isEnabled() {
+    public boolean getEnabled() {
         return enabled;
     }
 
@@ -71,6 +67,10 @@ public class User extends AbstractNamedEntity {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = CollectionUtils.isEmpty(roles) ? EnumSet.noneOf(Role.class) : EnumSet.copyOf(roles);
+    }
+
+    public boolean getIsAdmin() {
+        return isAdmin;
     }
 
     public String getPassword() {

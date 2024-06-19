@@ -25,7 +25,7 @@
 </head>
 <body>
 <section>
-    <h3><a href="afterLogin.jsp">Home</a></h3>
+    <h3><a href="index.html">Home</a></h3>
     <hr>
     <h2>${param.action == 'create' ? 'Create user' : 'Edit user'}</h2>
     <jsp:useBean id="user" type="ru.javawebinar.topjava.model.User" scope="request"/>

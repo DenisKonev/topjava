@@ -19,14 +19,18 @@ import static org.slf4j.LoggerFactory.getLogger;
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
     private static final String USERS = "users";
+    private ConfigurableApplicationContext appCtx;
     private UserService service;
 
     @Override
     public void init() throws ServletException {
-        super.init();
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            service = appCtx.getBean(UserService.class);
-        }
+        appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+        service = appCtx.getBean(UserService.class);
+    }
+
+    @Override
+    public void destroy() {
+        appCtx.close();
     }
 
     @Override
@@ -51,6 +55,14 @@ public class UserServlet extends HttpServlet {
                         service.get(getId(request));
                 request.setAttribute("user", user);
                 request.getRequestDispatcher("/userForm.jsp").forward(request, response);
+                break;
+            case "setUserId1":
+                SecurityUtil.setId(1);
+                request.getRequestDispatcher("meals").forward(request, response);
+                break;
+            case "setUserId2":
+                SecurityUtil.setId(2);
+                request.getRequestDispatcher("meals").forward(request, response);
                 break;
             case "all":
             default:
@@ -78,7 +90,6 @@ public class UserServlet extends HttpServlet {
     }
 
     private int getId(HttpServletRequest request) {
-        String paramId = Objects.requireNonNull(request.getParameter("id"));
-        return Integer.parseInt(paramId);
+        return Integer.parseInt(Objects.requireNonNull(request.getParameter("id")));
     }
 }

@@ -25,8 +25,7 @@
 <body>
 <section>
     <div class="header-links">
-        <h3><a href="afterLogin.jsp">Home</a></h3>
-        <h3><a href="index.jsp">Logout</a></h3>
+        <h3><a href="index.html">Home</a></h3>
         <c:if test="${user.isAdmin}">
             <h3><a href="users">Users</a></h3>
         </c:if>

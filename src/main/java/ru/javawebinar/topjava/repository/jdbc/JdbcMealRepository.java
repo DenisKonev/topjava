@@ -1,14 +1,43 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.sql.ResultSet;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public class JdbcMealRepository implements MealRepository {
+    private static final RowMapper<Meal> ROW_MAPPER = (ResultSet rs, int rowNum) -> {
+        Meal meal = new Meal(
+                rs.getInt("id"),
+                rs.getTimestamp("dateTime").toLocalDateTime(),
+                rs.getString("description"),
+                rs.getInt("calories")
+        );
+        return meal;
+    };
+
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private final SimpleJdbcInsert insertMeal;
+
+    @Autowired
+    public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+        this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("meals")
+                .usingGeneratedKeyColumns("id");
+
+        this.jdbcTemplate = jdbcTemplate;
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    }
 
     @Override
     public Meal save(Meal meal, int userId) {
@@ -27,7 +56,7 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return null;
+        return jdbcTemplate.query("SELECT * FROM meals ORDER BY datetime", ROW_MAPPER);
     }
 
     @Override

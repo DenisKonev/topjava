@@ -43,10 +43,6 @@ public class MatcherFactory {
             assertThat(actual).usingRecursiveFieldByFieldElementComparatorIgnoringFields(fieldsToIgnore).isEqualTo(expected);
         }
 
-        private static String getContent(MvcResult result) throws UnsupportedEncodingException {
-            return result.getResponse().getContentAsString();
-        }
-
         public ResultMatcher contentJson(T expected) {
             return result -> assertMatch(JsonUtil.readValue(getContent(result), clazz), expected);
         }
@@ -62,6 +58,10 @@ public class MatcherFactory {
 
         public T readFromJson(ResultActions action) throws UnsupportedEncodingException {
             return JsonUtil.readValue(getContent(action.andReturn()), clazz);
+        }
+
+        private static String getContent(MvcResult result) throws UnsupportedEncodingException {
+            return result.getResponse().getContentAsString();
         }
     }
 }

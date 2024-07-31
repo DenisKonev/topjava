@@ -39,5 +39,20 @@ public class DateTimeUtil {
     LocalTime parseLocalTime(@Nullable String str) {
         return StringUtils.hasLength(str) ? LocalTime.parse(str) : null;
     }
-}
 
+    public static LocalDate getStartDateOrDefault(LocalDate date) {
+        return date != null ? date : MIN_DATE.toLocalDate();
+    }
+
+    public static LocalTime getStartTimeOrDefault(LocalTime time) {
+        return time != null ? time : MIN_DATE.toLocalTime();
+    }
+
+    public static LocalDate getEndDateOrDefault(LocalDate date) {
+        return date != null ? date : MAX_DATE.toLocalDate();
+    }
+
+    public static LocalTime getEndTimeOrDefault(LocalTime time) {
+        return time != null ? time : MAX_DATE.toLocalTime();
+    }
+}

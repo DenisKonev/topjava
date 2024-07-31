@@ -38,6 +38,13 @@ public class AdminRestController extends AbstractUserController {
     }
 
     @Override
+    @GetMapping("/{id}/with-meals")
+    public User getWithMeals(@PathVariable int id) {
+        log.info("get user {} with meals", id);
+        return super.getWithMeals(id);
+    }
+
+    @Override
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {

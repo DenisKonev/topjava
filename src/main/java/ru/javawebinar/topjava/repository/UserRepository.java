@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
+import org.springframework.data.jpa.repository.Query;
 import ru.javawebinar.topjava.model.User;
 
 import java.util.List;
@@ -19,7 +20,6 @@ public interface UserRepository {
 
     List<User> getAll();
 
-    default User getWithMeals(int id) {
-        throw new UnsupportedOperationException();
-    }
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.meals WHERE u.id = :id")
+    User getWithMeals(int id);
 }

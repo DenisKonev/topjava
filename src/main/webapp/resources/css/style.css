@@ -43,3 +43,13 @@ body {
     line-height: 60px; /* Vertically center the text there */
     background-color: #f5f5f5;
 }
+
+#mealsTable {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+#mealsTable td, #mealsTable th {
+    padding: 8px;
+    border: 1px solid black;
+}

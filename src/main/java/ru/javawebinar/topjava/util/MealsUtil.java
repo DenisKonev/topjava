@@ -37,7 +37,11 @@ public class MealsUtil {
                 .toList();
     }
 
-    public static MealTo createTo(Meal meal, boolean excess) {
+    public static MealTo createTo(Meal meal, Boolean excess) {
         return new MealTo(meal.getId(), meal.getDateTime(), meal.getDescription(), meal.getCalories(), excess);
+    }
+
+    public static Meal createNewFromTo(MealTo mealTo) {
+        return new Meal(mealTo.getId(), mealTo.getDateTime(), mealTo.getDescription().toLowerCase(), mealTo.getCalories());
     }
 }

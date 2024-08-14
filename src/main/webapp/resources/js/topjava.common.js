@@ -1,10 +1,4 @@
 let form;
-let i18n = {
-    "addTitle": "Добавить запись",
-    "editTitle": "Редактировать запись",
-    "common.confirm": "Вы уверены?",
-    "common.errorStatus": "Ошибка"
-};
 
 function makeEditable(datatableApi) {
     ctx.datatableApi = datatableApi;

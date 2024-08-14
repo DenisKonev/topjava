@@ -45,12 +45,12 @@ $(function () {
                 {
                     "orderable": false,
                     "defaultContent": "",
-                    "render": renderEditBtn // Add function to render edit button
+                    "render": renderEditBtn
                 },
                 {
                     "orderable": false,
                     "defaultContent": "",
-                    "render": renderDeleteBtn // Add function to render delete button
+                    "render": renderDeleteBtn
                 }
             ],
             "order": [
@@ -58,7 +58,14 @@ $(function () {
                     0,
                     "desc"
                 ]
-            ]
+            ],
+            "createdRow": function (row, data) {
+                if (data.excess) {
+                    $(row).addClass('table-danger');
+                } else {
+                    $(row).addClass('table-success');
+                }
+            }
         })
     );
 });

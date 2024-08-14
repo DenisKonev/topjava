@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
 import javax.validation.Valid;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/profile/meals", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,17 +34,15 @@ public class MealUIController extends AbstractMealController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<String> createOrUpdateMeal(@Valid MealTo mealTo, BindingResult result) {
-        if (result.hasErrors()) {
-            String errorFieldsMsg = result.getFieldErrors().stream()
-                    .map(fe -> String.format("[%s] %s", fe.getField(), fe.getDefaultMessage()))
-                    .collect(Collectors.joining("<br>"));
-            return ResponseEntity.unprocessableEntity().body(errorFieldsMsg);
+    public ResponseEntity<String> createOrUpdateMeal(@Valid Meal meal, BindingResult result) {
+        ResponseEntity<String> errorResponse = ValidationUtil.processBindingResultErrors(result);
+        if (errorResponse != null) {
+            return errorResponse;
         }
-        if (mealTo.isNew()) {
-            super.createTo(mealTo);
+        if (meal.isNew()) {
+            super.create(meal);
         } else {
-            super.updateTo(mealTo, mealTo.id());
+            super.update(meal, meal.id());
         }
         return ResponseEntity.ok().build();
     }
@@ -59,7 +58,7 @@ public class MealUIController extends AbstractMealController {
     }
 
     @GetMapping("/{id}")
-    public MealTo getMeal(@PathVariable int id) {
-        return super.getTo(id);
+    public Meal getMeal(@PathVariable int id) {
+        return super.get(id);
     }
 }

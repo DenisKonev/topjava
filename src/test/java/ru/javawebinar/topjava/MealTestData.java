@@ -35,6 +35,22 @@ public class MealTestData {
     }
 
     public static Meal getUpdated() {
-        return new Meal(MEAL1_ID, meal1.getDateTime().plus(2, ChronoUnit.MINUTES), "Обновленный завтрак", 200);
+        return new Meal(MEAL1_ID, meal1.getDateTime().plusMinutes(2), "Обновленный завтрак", 200);
+    }
+
+    public static Meal getInvalidWithEmptyName() {
+        return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "", 300);
+    }
+
+    public static Meal getInvalidWithNegativeCalories() {
+        return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Invalid meal", -100);
+    }
+
+    public static Meal getInvalidWithZeroCalories() {
+        return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), "Zero calories meal", 0);
+    }
+
+    public static Meal getInvalidWithBlankName() {
+        return new Meal(null, of(2020, Month.FEBRUARY, 1, 18, 0), " ", 300);
     }
 }

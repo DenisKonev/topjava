@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -12,6 +13,8 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 
 import javax.validation.Valid;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.isDuplicateEmailException;
+
 @Controller
 @RequestMapping("/profile")
 public class ProfileUIController extends AbstractUserController {
@@ -23,14 +26,7 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping
     public String updateProfile(@Valid UserTo userTo, BindingResult result, SessionStatus status) {
-        if (result.hasErrors()) {
-            return "profile";
-        } else {
-            super.update(userTo, SecurityUtil.authUserId());
-            SecurityUtil.get().setTo(userTo);
-            status.setComplete();
-            return "redirect:/meals";
-        }
+        return handleUserUpdate(userTo, result, status, false);
     }
 
     @GetMapping("/register")
@@ -42,13 +38,31 @@ public class ProfileUIController extends AbstractUserController {
 
     @PostMapping("/register")
     public String saveRegister(@Valid UserTo userTo, BindingResult result, SessionStatus status, ModelMap model) {
-        if (result.hasErrors()) {
+        String view = handleUserUpdate(userTo, result, status, true);
+        if ("profile".equals(view)) {
             model.addAttribute("register", true);
+        }
+        return view;
+    }
+
+    private String handleUserUpdate(UserTo userTo, BindingResult result, SessionStatus status, boolean isNewUser) {
+        if (result.hasErrors()) {
             return "profile";
-        } else {
-            super.create(userTo);
+        }
+        try {
+            if (isNewUser) {
+                super.create(userTo);
+            } else {
+                super.update(userTo, SecurityUtil.authUserId());
+                SecurityUtil.get().setTo(userTo);
+            }
             status.setComplete();
-            return "redirect:/login?message=app.registered&username=" + userTo.getEmail();
+            return isNewUser ? "redirect:/login?message=app.registered&username=" + userTo.getEmail() : "redirect:/meals";
+        } catch (DataIntegrityViolationException e) {
+            if (isDuplicateEmailException(e)) {
+                result.rejectValue("email", "error.userTo", "A user with this email already exists.");
+            }
+            return "profile";
         }
     }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.validation.ValidationUtil;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,8 +53,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newId = insertMeal.executeAndReturnKey(map);
             meal.setId(newId.intValue());
         } else {
-            if (namedParameterJdbcTemplate.update("" +
-                    "UPDATE meal " +
+            if (namedParameterJdbcTemplate.update("UPDATE meal " +
                     "   SET description=:description, calories=:calories, date_time=:date_time " +
                     " WHERE id=:id AND user_id=:user_id", map) == 0) {
                 return null;

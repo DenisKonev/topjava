@@ -91,23 +91,4 @@ public class ExceptionInfoHandler {
                         details.length != 0 ? details : new String[]{ValidationUtil.getMessage(rootCause)})
                 );
     }
-
-    @ExceptionHandler({IllegalRequestDataException.class, MethodArgumentTypeMismatchException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<ErrorInfo> validationError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorInfo> internalError(HttpServletRequest req, Exception e) {
-        return logAndGetErrorInfo(req, e, true, APP_ERROR);
-    }
-
-    @ExceptionHandler(BindException.class)
-    public ResponseEntity<ErrorInfo> bindValidationError(HttpServletRequest req, BindException e) {
-        String[] details = e.getBindingResult().getFieldErrors().stream()
-                .map(messageSourceAccessor::getMessage)
-                .toArray(String[]::new);
-
-        return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR, details);
-    }
 }
